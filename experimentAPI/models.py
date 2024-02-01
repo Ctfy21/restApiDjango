@@ -15,7 +15,7 @@ class Box(models.Model):
 
 class Variety(models.Model):
     title = models.CharField(max_length=200)
-    sequence_number = models.IntegerField()
+    sequence_number = models.IntegerField(null=True)
     is_templated = models.BooleanField(default=False)
     sequence_box_number = models.PositiveSmallIntegerField()
     relative_template_percent = models.FloatField(null=True)
@@ -24,22 +24,7 @@ class Variety(models.Model):
     
     def __str__(self):
         return self.title 
-    
-class CurrentValues(models.Model):
-    time_create = models.DateTimeField(auto_now_add = True)
-    time_update = models.DateTimeField(auto_now = True)
-    variety = models.ForeignKey('Variety', on_delete=models.PROTECT, null = False)
-    box = models.ForeignKey('Box', on_delete=models.PROTECT, null = False)
-    # recurrence = models.PositiveSmallIntegerField()
-    # regime = models.ForeignKey('Regime', on_delete=models.PROTECT, null = False)
-    all_plants = models.PositiveSmallIntegerField()
-    live_plants = models.PositiveSmallIntegerField()
-    grown_plants_value = models.PositiveSmallIntegerField()
-    live_plants_percent = models.FloatField()
-    experiment = models.ForeignKey('Experiment', on_delete=models.PROTECT, null = False)
-    
-    def __str__(self):
-        return self.time_create
+
 
 class Experiment(models.Model):
     title = models.CharField(max_length=200)
@@ -50,4 +35,21 @@ class Experiment(models.Model):
      
     def __str__(self):
         return self.title 
+  
+class CurrentValues(models.Model):
+    time_create = models.DateTimeField(auto_now_add = True)
+    time_update = models.DateTimeField(auto_now = True)
+    variety_id = models.ForeignKey(Variety, related_name='current_values', on_delete=models.PROTECT, null = False)
+    box_id = models.ForeignKey(Box, related_name='current_values', on_delete=models.PROTECT, null = False)
+    # recurrence = models.PositiveSmallIntegerField()
+    # regime = models.ForeignKey('Regime', on_delete=models.PROTECT, null = False)
+    all_plants = models.PositiveSmallIntegerField()
+    live_plants = models.PositiveSmallIntegerField()
+    grown_plants_value = models.PositiveSmallIntegerField(null = True)
+    live_plants_percent = models.FloatField()
+    experiment_id = models.ForeignKey(Experiment, related_name='current_values', on_delete=models.PROTECT, null = False)
+    
+    def __str__(self):
+        return self.time_create
+
     

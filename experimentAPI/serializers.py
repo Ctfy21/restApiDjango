@@ -2,12 +2,11 @@ from rest_framework.response import Response
 from rest_framework import serializers
 from .models import Experiment, Variety, Box, CurrentValues
 
-class ExperimentSerializer(serializers.Serializer):
-    title = serializers.CharField(max_length=200)
-    max_recurrence = serializers.IntegerField()
-    max_regime = serializers.IntegerField()
-    max_box_variety = serializers.IntegerField()
-    start_time = serializers.DateField()
+class ExperimentSerializer(serializers.ModelSerializer):
+    current_values = serializers.PrimaryKeyRelatedField(many=True, queryset=CurrentValues.objects.all())
+    class Meta:
+        model = Experiment
+        fields = '__all__'
     
     def create(self, validated_data):
         return Experiment.objects.create(**validated_data)
@@ -21,14 +20,11 @@ class ExperimentSerializer(serializers.Serializer):
         instance.save()
         return instance
     
-class VarietySerializer(serializers.Serializer):
-    title = serializers.CharField(max_length=200)
-    sequence_number = serializers.IntegerField()
-    is_templated = serializers.BooleanField(default=False)
-    sequence_box_number = serializers.IntegerField()
-    relative_template_percent = serializers.FloatField()
-    score = serializers.IntegerField()
-    additional_info = serializers.CharField()
+class VarietySerializer(serializers.ModelSerializer):
+    current_values = serializers.PrimaryKeyRelatedField(many=True, queryset=CurrentValues.objects.all())
+    class Meta:
+        model = Variety
+        fields = '__all__'
     
     def create(self, validated_data):
         return Variety.objects.create(**validated_data)
@@ -44,8 +40,11 @@ class VarietySerializer(serializers.Serializer):
         instance.save()
         return instance      
         
-class BoxSerializer(serializers.Serializer):
-    box_number = serializers.IntegerField()
+class BoxSerializer(serializers.ModelSerializer):
+    current_values = serializers.PrimaryKeyRelatedField(many=True, queryset=CurrentValues.objects.all())
+    class Meta:
+        model = Box
+        fields = ['id', 'box_number', 'current_values']
     
     def create(self, validated_data):
         return Box.objects.create(**validated_data)
@@ -55,24 +54,16 @@ class BoxSerializer(serializers.Serializer):
         instance.save()
         return instance  
     
-class CurrentValuesSerializer(serializers.Serializer):
-    time_create = serializers.DateTimeField(read_only=True)
-    time_update = serializers.DateTimeField(read_only=True)
-    variety_id = serializers.IntegerField()
-    box_id = serializers.IntegerField()
-    # recurrence = models.PositiveSmallIntegerField()
-    # regime = models.ForeignKey('Regime', on_delete=models.PROTECT, null = False)
-    all_plants = serializers.IntegerField()
-    live_plants = serializers.IntegerField()
-    grown_plants_value = serializers.IntegerField()
-    # live_plants_percent = serializers.FloatField()
-    experiment_id = serializers.IntegerField() 
+class CurrentValuesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CurrentValues
+        fields = '__all__'
     
     def create(self, validated_data):
-        live_plants_temp = validated_data.get("live_plants")
-        all_plants_temp = validated_data.get("all_plants")
-        live_plants_percent_temp =  live_plants_temp / all_plants_temp * 100
-        return CurrentValues.objects.create(live_plants_percent = live_plants_percent_temp, **validated_data)
+        # live_plants_temp = validated_data.get("live_plants")
+        # all_plants_temp = validated_data.get("all_plants")
+        # live_plants_percent_temp =  live_plants_temp / all_plants_temp * 100
+        return CurrentValues.objects.create(**validated_data)
     
     def update(self, instance, validated_data):
         instance.time_update = validated_data.get("time_update", instance.time_update)
@@ -84,4 +75,4 @@ class CurrentValuesSerializer(serializers.Serializer):
         instance.live_plants_percent = validated_data.get("live_plants") / validated_data.get("all_plants") * 100
         instance.experiment_id = validated_data.get("experiment_id", instance.experiment_id)
         instance.save()
-        return instance  
+        return instance 

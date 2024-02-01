@@ -46,8 +46,8 @@ class BoxAPIDetailView(generics.RetrieveUpdateDestroyAPIView):
     
     
 class CurrentValuesAPIList(generics.ListCreateAPIView):
-    queryset = Box.objects.all()
-    serializer_class = BoxSerializer
+    queryset = CurrentValues.objects.all()
+    serializer_class = CurrentValuesSerializer
 
 class CurrentValuesAPIUpdate(generics.UpdateAPIView):
     queryset = CurrentValues.objects.all()
