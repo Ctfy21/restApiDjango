@@ -1,10 +1,10 @@
 from django.db import models
 
 class Box(models.Model):
-    title = models.IntegerField()
+    box_number = models.IntegerField()
     
     def __str__(self):
-        return self.title
+        return self.box_number
 
 # class Regime(models.Model):
 #     title = models.CharField(max_length=100)
@@ -15,11 +15,11 @@ class Box(models.Model):
 
 class Variety(models.Model):
     title = models.CharField(max_length=200)
-    sequence_number = models.IntegerField(null=True)
+    sequence_number = models.IntegerField()
     is_templated = models.BooleanField(default=False)
     sequence_box_number = models.PositiveSmallIntegerField()
-    relative_template_percent = models.FloatField()
-    score = models.PositiveSmallIntegerField()
+    relative_template_percent = models.FloatField(null=True)
+    score = models.PositiveSmallIntegerField(null=True)
     additional_info = models.TextField(blank=True)
     
     def __str__(self):
