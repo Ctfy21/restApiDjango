@@ -6,12 +6,12 @@ class Box(models.Model):
     def __str__(self):
         return self.title
 
-class Regime(models.Model):
-    title = models.CharField(max_length=100)
-    live_plants_percent_regime = models.FloatField()
+# class Regime(models.Model):
+#     title = models.CharField(max_length=100)
+#     live_plants_percent_regime = models.FloatField()
     
-    def __str__(self):
-        return self.title
+#     def __str__(self):
+#         return self.title
 
 class Variety(models.Model):
     title = models.CharField(max_length=200)
@@ -30,8 +30,8 @@ class CurrentValues(models.Model):
     time_update = models.DateTimeField(auto_now = True)
     variety = models.ForeignKey('Variety', on_delete=models.PROTECT, null = False)
     box = models.ForeignKey('Box', on_delete=models.PROTECT, null = False)
-    recurrence = models.PositiveSmallIntegerField()
-    regime = models.ForeignKey('Regime', on_delete=models.PROTECT, null = False)
+    # recurrence = models.PositiveSmallIntegerField()
+    # regime = models.ForeignKey('Regime', on_delete=models.PROTECT, null = False)
     all_plants = models.PositiveSmallIntegerField()
     live_plants = models.PositiveSmallIntegerField()
     grown_plants_value = models.PositiveSmallIntegerField()
@@ -46,6 +46,7 @@ class Experiment(models.Model):
     max_recurrence = models.PositiveSmallIntegerField()
     max_regime = models.PositiveSmallIntegerField()
     max_box_variety = models.PositiveSmallIntegerField()
+    start_time = models.DateField()
      
     def __str__(self):
         return self.title 
